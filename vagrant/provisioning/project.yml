@@ -1,0 +1,43 @@
+- name: Installs php.
+  apt:
+    pkg: "{{ item }}"
+    update_cache: true
+  with_items:
+  - php5-fpm
+  - php5-cli
+  - php5-mysql
+  - php5-curl
+  - php5-gd
+  - nginx
+  - mysql-server
+  - python-mysqldb # For the ansible command - mysql_user
+
+- name: Copies nginx vhost configuration in place.
+  template:
+    src: nginx-vh.j2
+    dest: /etc/nginx/sites-available/{{ project_name }}
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Links the Virtual host.
+  file:
+    src: /etc/nginx/sites-available/{{ project_name }}
+    dest: /etc/nginx/sites-enabled/{{ project_name }}
+    owner: root
+    group: root
+    mode: 0644
+    state: link
+  notify:
+    - Restart Nginx
+
+- name: Updates MySQL root password for all root accounts
+  mysql_user:
+    name: root
+    host: "{{ item }}"
+    password: "{{ mysql_root_db_pass }}"
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost

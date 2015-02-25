@@ -1,0 +1,11 @@
+- hosts: shelepen
+  gather_facts: yes
+  sudo: true
+  vars_files:
+  - variables.yml
+  tasks:
+  - include: sysutils.yml
+  - include: project.yml
+  handlers:
+  - include: handlers.yml
+
