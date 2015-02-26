@@ -5,4 +5,5 @@
   with_items:
     - htop
     - mc
-  apt: name=mc state=present
+    - git
+  when: install
