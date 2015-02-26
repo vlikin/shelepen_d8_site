@@ -6,4 +6,4 @@
 === REPOSITORIES ===
 * Subtree tutotial - http://blogs.atlassian.com/2013/05/alternatives-to-git-submodule-git-subtree/
 git remote add -f drupal-core http://git.drupal.org/project/drupal.git
-git subtree add --prefix drupal drupal-core 8.0.x --squash
+git subtree add --prefix public_html drupal-core 8.0.x --squash  
