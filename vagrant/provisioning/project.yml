@@ -35,8 +35,10 @@
   when: install
 
 - name: Creates database for the project.
-  mysql_db: name=shelepen state=present
-  when: develop
+  mysql_db:
+    name: "{{ project_name }}"
+    state: present
+  when: install
 
 - name: Updates MySQL root password for all root accounts
   mysql_user:
@@ -50,25 +52,13 @@
     - localhost
   when: install
 
-- name: "Checkout Drush repository"
-  git:
-    dest: "{{drush_git_dest}}"
-    repo: "{{drush_git_repo}}"
-    version: "{{drush_git_version}}"
-  when: install
-
-- name: "Create Drush binary symlink"
-  file: path={{drush_git_bin}} src={{drush_git_dest}}/drush state=link
-  when: install
-
-
-- name: Install Composer into the current directory.
+- name: Installs Composer into the current directory.
   shell: >
     curl -sS https://getcomposer.org/installer | php
       creates={{ composer_path }}
   when: install
 
-- name: Move Composer into globally-accessible location.
+- name: Moves Composer into globally-accessible location.
   shell: >
     mv composer.phar {{ composer_path }}
       creates={{ composer_path }}
@@ -81,7 +71,18 @@
   changed_when: "'Updating to version' in composer_update.stdout"
   when: composer_keep_updated
 
-- name: Update Drush libraries 1
+- name: "Checkout Drush repository"
+  git:
+    dest: "{{ drush_git_dest }}"
+    repo: "{{ drush_git_repo }}"
+    version: "{{ drush_git_version }}"
+  when: install
+
+- name: "Create Drush binary symlink"
+  file: path={{ drush_git_bin }} src={{ drush_git_dest }}/drush state=link
+  when: install
+
+- name: Update Drush libraries
   shell:  composer install
   args:
     chdir: "{{ drush_git_dest }}"
@@ -90,12 +91,12 @@
 - name: Install Drupal.
   shell: >
     drush si -y
-    --site-name="{{ drupal_site_name }}"
-    --account-name=admin
-    --account-pass={{ drupal_admin_pass }}
-    --db-url=mysql://root@localhost/{{ domain }}
+    --site-name="{{ site_name }}"
+    --account-name={{ site_user }}
+    --account-pass={{ site_pass }}
+    --db-url=mysql://{{ site_db_user }}:{{ site_db_pass }}@localhost/{{ site_db_name }}
   args:
-    chdir={{ drupal_core_path }}
-  sudo: yes
-  sudo_user: www-data
-  when: develop
+    chdir: "{{ site_path }}"
+    sudo: yes
+    sudo_user: www-data
+  when: install

@@ -1,5 +1,5 @@
 server {
-        server_name {{ project_name }}.local www.{{ project_name }}.local;
+        server_name {{ project_name }}.{{ vagrant_domain }} www.{{ project_name }}.{{ vagrant_domain }};
         root /var/www/{{ project_name }}/public_html; ## <-- Your only path reference.
  
         # Enable compression, this will help if you have for instance advagg‎ module

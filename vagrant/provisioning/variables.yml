@@ -1,8 +1,9 @@
 # variables
+vagrant_domain: vagrant
 
 project_name: shelepen
 mysql_root_db_pass: root
-install: false
+install: true
 develop: true
 
 composer_path: /usr/local/bin/composer
@@ -12,3 +13,11 @@ drush_git_repo: https://github.com/drush-ops/drush.git
 drush_git_version: master
 drush_git_dest: /opt/drush
 drush_git_bin: /usr/local/bin/drush
+
+site_db_user: "root"
+site_db_pass: "{{ mysql_root_db_pass }}"
+site_db_name: "{{ project_name }}"
+site_name: "{{ project_name }}"
+site_user: "admin"
+site_pass: "admin"
+site_path: /var/www/{{ project_name }}/public_html/sites/default

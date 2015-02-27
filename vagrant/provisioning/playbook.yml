@@ -6,6 +6,7 @@
   tasks:
   - include: sysutils.yml
   - include: project.yml
+  - include: develop.yml
   handlers:
   - include: handlers.yml
 
